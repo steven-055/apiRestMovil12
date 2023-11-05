@@ -40,7 +40,7 @@ export const createClientes = async (req, res) => {
         });
     }
 };
-
+ 
 export const updateClientes = async (req, res) => {
     try {
         const clientId = req.params.cod_cliente;
