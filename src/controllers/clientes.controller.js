@@ -10,19 +10,26 @@ export const getClientes = async (req, res) => {
         });
     }
 };
-
 export const createClientes = async (req, res) => {
     try {
         const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi } = req.body;
 
-        if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi || !id_Habi) {
-            return res.status(400).json({ message: 'Todos los campos son requeridos.' });
+        if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi) {
+            return res.status(400).json({ message: 'Error al crear' });
         }
 
-        const [rows] = await pool.query(
-            'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi]
-        );
+        let query;
+        let values;
+
+        if (id_Habi) {
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi];
+        } else {
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi) VALUES (?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi];
+        }
+
+        const [rows] = await pool.query(query, values);
 
         res.send({
             cod_cliente: rows.insertId,
@@ -40,6 +47,7 @@ export const createClientes = async (req, res) => {
         });
     }
 };
+
  
 export const updateClientes = async (req, res) => {
     try {
