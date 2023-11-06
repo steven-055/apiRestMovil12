@@ -10,12 +10,23 @@ export const getClientes = async (req, res) => {
         });
     }
 };
+
 export const createClientes = async (req, res) => {
     try {
         const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi } = req.body;
 
         if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi) {
             return res.status(400).json({ message: 'Error al crear' });
+        }
+
+        // Verificar si ya existe un cliente con el mismo email o dni o telefono
+        const existingClient = await pool.query(
+            'SELECT * FROM tb_cliente WHERE email = ? OR dni = ? OR telefono = ?',
+            [email, dni, telefono]
+        );
+
+        if (existingClient.length > 0) {
+            return res.status(409).json({ message: 'Ya existe una cuenta con el mismo correo, DNI o teléfono.' });
         }
 
         let query;
@@ -47,6 +58,7 @@ export const createClientes = async (req, res) => {
         });
     }
 };
+
 
  
 export const updateClientes = async (req, res) => {
