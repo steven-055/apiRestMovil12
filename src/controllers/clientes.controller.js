@@ -19,14 +19,22 @@ export const createClientes = async (req, res) => {
             return res.status(400).json({ message: 'Error al crear' });
         }
 
-        // Verificar si ya existe un cliente con el mismo email o dni o telefono
-        const existingClient = await pool.query(
-            'SELECT * FROM tb_cliente WHERE email = ? OR dni = ? OR telefono = ?',
-            [email, dni, telefono]
-        );
+        // Validar si el DNI ya existe en la base de datos
+        const [existingDniRows] = await pool.query('SELECT * FROM tb_cliente WHERE dni = ?', [dni]);
+        if (existingDniRows.length > 0) {
+            return res.status(400).json({ message: 'El DNI ya existe en la base de datos' });
+        }
 
-        if (existingClient.length > 0) {
-            return res.status(409).json({ message: 'Ya existe una cuenta con el mismo correo, DNI o teléfono.' });
+        // Validar si el correo electrónico ya existe en la base de datos
+        const [existingEmailRows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ?', [email]);
+        if (existingEmailRows.length > 0) {
+            return res.status(400).json({ message: 'El correo electrónico ya existe en la base de datos' });
+        }
+
+        // Validar si el número de teléfono ya existe en la base de datos
+        const [existingTelefonoRows] = await pool.query('SELECT * FROM tb_cliente WHERE telefono = ?', [telefono]);
+        if (existingTelefonoRows.length > 0) {
+            return res.status(400).json({ message: 'El número de teléfono ya existe en la base de datos' });
         }
 
         let query;
@@ -58,6 +66,7 @@ export const createClientes = async (req, res) => {
         });
     }
 };
+
 
 
  
