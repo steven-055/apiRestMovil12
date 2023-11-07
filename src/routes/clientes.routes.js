@@ -12,7 +12,7 @@ router.patch('/clientes/actualiza/:cod_cliente', updateClientes);
 
 router.delete('/clientes/elimina/:cod_cliente', deleteClientes); 
 
-router.post('/clientes/login', loginClientes);
+router.post('/clientes/login', loginClientes); 
 
 export default router
 
