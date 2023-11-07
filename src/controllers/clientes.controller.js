@@ -114,7 +114,6 @@ export const deleteClientes = async (req, res) => {
         });
     }
 };
-
 export const loginClientes = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -126,13 +125,14 @@ export const loginClientes = async (req, res) => {
         const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ? AND password = ?', [email, password]);
 
         if (rows.length === 0) {
-            return res.status(401).json({ message: 'Credenciales inválidas' });
+            return res.status(401).json({ message: 'Usuario no encontrado' });
         }
 
         // Aquí podrías generar un token de autenticación para el cliente si la autenticación es exitosa
 
-        res.json({ message: 'Inicio de sesión exitoso' }); // Puedes ajustar el mensaje y los datos que deseas devolver en la respuesta.
+        return res.status(200).json({ message: 'Inicio de sesión exitoso' }); // Puedes ajustar el mensaje y los datos que deseas devolver en la respuesta.
     } catch (error) {
+        console.error("Error en la función de inicio de sesión:", error);
         return res.status(500).json({
             message: 'ALGO SALIO MAL',
         });
