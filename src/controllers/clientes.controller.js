@@ -114,3 +114,27 @@ export const deleteClientes = async (req, res) => {
         });
     }
 };
+
+export const loginClientes = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Por favor, proporcione un correo electrónico y una contraseña' });
+        }
+
+        const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ? AND password = ?', [email, password]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ message: 'Credenciales inválidas' });
+        }
+
+        // Aquí podrías generar un token de autenticación para el cliente si la autenticación es exitosa
+
+        res.json({ message: 'Inicio de sesión exitoso' }); // Puedes ajustar el mensaje y los datos que deseas devolver en la respuesta.
+    } catch (error) {
+        return res.status(500).json({
+            message: 'ALGO SALIO MAL',
+        });
+    }
+};
