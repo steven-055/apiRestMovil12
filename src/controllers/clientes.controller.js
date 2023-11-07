@@ -13,9 +13,9 @@ export const getClientes = async (req, res) => {
 
 export const createClientes = async (req, res) => {
     try {
-        const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi } = req.body;
+        const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password } = req.body;
 
-        if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi) {
+        if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi || !password) {
             return res.status(400).json({ message: 'Error al crear' });
         }
 
@@ -37,15 +37,16 @@ export const createClientes = async (req, res) => {
             return res.status(400).json({ message: 'El número de teléfono ya existe en la base de datos' });
         }
 
+        // Resto del código para la inserción en la base de datos
         let query;
         let values;
 
         if (id_Habi) {
-            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi];
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password];
         } else {
-            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi) VALUES (?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi];
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, password];
         }
 
         const [rows] = await pool.query(query, values);
@@ -59,10 +60,11 @@ export const createClientes = async (req, res) => {
             email,
             id_Ubi,
             id_Habi,
+            password,
         });
     } catch (error) {
         return res.status(500).json({
-            message: 'ALGO SALIO MAL'
+            message: 'ALGO SALIO MAL',
         });
     }
 };

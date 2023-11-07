@@ -18,7 +18,7 @@ export const createUsuarios = async (req, res) => {
     try {
         const { login, password, idrol, id_Ubi, nombre, apellido, dni, telefono } = req.body;
 
-
+        
         if (!login || !password || !idrol || !id_Ubi || !nombre || !apellido || !dni || !telefono) {
             return res.status(400).json({ message: 'Todos los campos son requeridos.' });
         }
@@ -48,6 +48,10 @@ export const createUsuarios = async (req, res) => {
 
     }
 };
+
+
+
+
 export const updateUsuarios = async (req, res) => {
     try {
         
