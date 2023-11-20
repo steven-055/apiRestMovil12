@@ -14,6 +14,7 @@ app.use('/api', sedesRoutes)
 app.use('/api', empleadoRoutes)
 app.use('/api', clientesRoutes)
 
+
 app.use((req, res, next) => {
     res.status(404).json({
         message: "NO ENCONTRADO"
