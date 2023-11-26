@@ -85,7 +85,9 @@ export const updateClientes = async (req, res) => {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
 
-        res.json({ message: 'Cliente actualizado correctamente' });
+        const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE cod_cliente = ?', [clientId]);
+
+        res.json(rows[0]);
     } catch (error) {
         return res.status(500).json({
             message: 'ALGO SALIO MAL'
