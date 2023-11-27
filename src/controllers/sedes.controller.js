@@ -37,7 +37,7 @@ export const createSede = async (req, res) => {
 
 export const updateSede = async (req, res) => {
     try {
-        const sedeId = req.params.id_Ubi; // Asumiendo que el parámetro en la URL es id_Ubi
+        const sedeId = req.params.id_Ubi; 
         const { distrito } = req.body;
 
         const [result] = await pool.query(
