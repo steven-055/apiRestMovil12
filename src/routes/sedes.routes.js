@@ -8,7 +8,7 @@ router.get('/sedes/lista', getSedes);
 
 router.post('/sedes/crea', createSede);
 
-router.patch('/sedes/actualiza/:id_Ubi', updateSede); 
+router.post('/sedes/actualiza/:id_Ubi', updateSede); 
 
 router.delete('/sedes/elimina/:id_Ubi', deleteSede); 
 

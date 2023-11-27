@@ -36,36 +36,44 @@ export const createSede = async (req, res) => {
 };
 
 export const updateSede = async (req, res) => {
-    const id_Ubi = req.params.id; // Obtener el id desde la URL
-    const { distrito } = req.body;
-
     try {
-        const result = await pool.query('UPDATE tb_sedes SET distrito = ? WHERE id_Ubi = ?', [distrito, id_Ubi]);
+        const sedeId = req.params.id_Ubi; // Asumiendo que el parámetro en la URL es id_Ubi
+        const { distrito } = req.body;
 
-        if (result.affectedRows > 0) {
-            res.json({ message: 'Sede actualizada exitosamente.' });
-        } else {
-            res.status(404).json({ message: 'Sede no encontrada.' });
+        const [result] = await pool.query(
+            'UPDATE tb_sedes SET distrito = IFNULL(?, distrito) WHERE id_Ubi = ?',
+            [distrito, sedeId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Sede no encontrada' });
         }
+
+        res.json({ message: 'Sede actualizada correctamente' });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error al actualizar la sede.' });
+        return res.status(500).json({
+            message: 'ALGO SALIÓ MAL'
+        });
     }
 };
 
+
+
+
 export const deleteSede = async (req, res) => {
-    const id_Ubi = req.params.id;
-
     try {
-        const result = await pool.query('DELETE FROM tb_sedes WHERE id_Ubi = ?', [id_Ubi]);
+        const sedeId = req.params.id_Ubi; 
+        const [result] = await pool.query('DELETE FROM tb_sedes WHERE id_Ubi = ?', [sedeId]);
 
-        if (result.affectedRows > 0) {
-            res.json({ message: 'Sede eliminada exitosamente.' });
-        } else {
-            res.status(404).json({ message: 'Sede no encontrada.' });
+        if (result.affectedRows <= 0) {
+            return res.status(404).json({
+                message: 'Sede no eliminada'
+            });
         }
+        res.sendStatus(204);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error al eliminar la sede.' });
+        return res.status(500).json({
+            message: 'ALGO SALIÓ MAL'
+        });
     }
 };
