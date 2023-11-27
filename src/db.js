@@ -4,7 +4,7 @@ import {
     DB_PORT,
     DB_USER,
     DB_PASSWORD,
-    DB_DATABASE
+    DB_DATABASE,
 } from './config.js';
  
 
