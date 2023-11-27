@@ -3,7 +3,7 @@ import { getRoles, createRol, updateRol, deleteRol } from '../controllers/rol.co
 
 const router = Router();
 
-
+router.get('/rol/lista', getRoles);
 
 router.post('/rol/crea', createRol);
 
