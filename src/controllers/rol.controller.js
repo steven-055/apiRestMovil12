@@ -1,7 +1,5 @@
 import { pool } from '../db.js';
 
-
-
 export const getRoles = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM tb_rol');
@@ -10,9 +8,6 @@ export const getRoles = async (req, res) => {
         return res.status(500).json({ message: 'ALGO SALIÓ MAL' });
     }
 };
-
-
-
 
 export const createRol = async (req, res) => {
     const { descripcion } = req.body;
@@ -25,9 +20,6 @@ export const createRol = async (req, res) => {
         return res.status(500).json({ message: 'Error al crear el rol.' });
     }
 };
-
-
-
 
 
 export const updateRol = async (req, res) => {

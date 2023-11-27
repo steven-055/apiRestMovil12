@@ -19,25 +19,22 @@ export const createClientes = async (req, res) => {
             return res.status(400).json({ message: 'Error al crear' });
         }
 
-        // Validar si el DNI ya existe en la base de datos
         const [existingDniRows] = await pool.query('SELECT * FROM tb_cliente WHERE dni = ?', [dni]);
         if (existingDniRows.length > 0) {
             return res.status(400).json({ message: 'El DNI ya existe en la base de datos' });
         }
 
-        // Validar si el correo electrónico ya existe en la base de datos
         const [existingEmailRows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ?', [email]);
         if (existingEmailRows.length > 0) {
             return res.status(400).json({ message: 'El correo electrónico ya existe en la base de datos' });
         }
 
-        // Validar si el número de teléfono ya existe en la base de datos
         const [existingTelefonoRows] = await pool.query('SELECT * FROM tb_cliente WHERE telefono = ?', [telefono]);
         if (existingTelefonoRows.length > 0) {
             return res.status(400).json({ message: 'El número de teléfono ya existe en la base de datos' });
         }
 
-        // Resto del código para la inserción en la base de datos
+     
         let query;
         let values;
 
@@ -128,9 +125,8 @@ export const loginClientes = async (req, res) => {
             return res.status(401).json({ message: 'Usuario no encontrado' });
         }
 
-        // Aquí podrías generar un token de autenticación para el cliente si la autenticación es exitosa
-
-        return res.status(200).json({ message: 'Inicio de sesión exitoso' }); // Puedes ajustar el mensaje y los datos que deseas devolver en la respuesta.
+        
+        return res.status(200).json({ message: 'Inicio de sesión exitoso' }); 
     } catch (error) {
         console.error("Error en la función de inicio de sesión:", error);
         return res.status(500).json({

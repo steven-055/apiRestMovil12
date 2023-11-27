@@ -51,7 +51,6 @@ export const createEmpleados = async (req, res) => {
 
 
 
-
 export const updateEmpleados = async (req, res) => {
     try {
         

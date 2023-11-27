@@ -1,8 +1,4 @@
-
-
 import { pool } from '../db.js';
-
-
 
 
 export const getSedes = async (req, res) => {
@@ -15,12 +11,6 @@ export const getSedes = async (req, res) => {
         });
     }
 };
-
-
-
-
-
-
 
 
 export const createSede = async (req, res) => {

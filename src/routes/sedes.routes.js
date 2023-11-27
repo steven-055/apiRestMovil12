@@ -5,7 +5,6 @@ const router = Router()
 
 router.get('/sedes/lista', getSedes);
 
-
 router.post('/sedes/crea', createSede);
 
 router.post('/sedes/actualiza/:id_Ubi', updateSede); 

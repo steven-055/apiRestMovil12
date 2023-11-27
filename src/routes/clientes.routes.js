@@ -9,7 +9,6 @@ router.post('/clientes/crea', createClientes);
 
 router.patch('/clientes/actualiza/:cod_cliente', updateClientes); 
 
-
 router.delete('/clientes/elimina/:cod_cliente', deleteClientes); 
 
 router.post('/clientes/login', loginClientes); 
