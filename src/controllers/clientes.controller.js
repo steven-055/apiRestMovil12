@@ -1,15 +1,17 @@
 import { pool } from '../db.js';
+import bcrypt from 'bcrypt';
 
 export const getClientes = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM tb_cliente');
+        const [rows] = await pool.query('SELECT cod_cliente, nombre, apellido, dni, telefono, email, id_Ubi, id_Habi FROM tb_cliente');
         res.json(rows);
     } catch (error) {
         return res.status(500).json({
-            message: 'ALGO SALIO MAL'
+            message: 'ALGO SALIÓ MAL'
         });
     }
 };
+
 
 export const createClientes = async (req, res) => {
     try {
@@ -34,16 +36,18 @@ export const createClientes = async (req, res) => {
             return res.status(400).json({ message: 'El número de teléfono ya existe en la base de datos' });
         }
 
-     
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the number of salt rounds
+
         let query;
         let values;
 
         if (id_Habi) {
             query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password];
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword];
         } else {
             query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi, password];
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, hashedPassword];
         }
 
         const [rows] = await pool.query(query, values);
@@ -57,8 +61,8 @@ export const createClientes = async (req, res) => {
             email,
             id_Ubi,
             id_Habi,
-            password,
         });
+        
     } catch (error) {
         return res.status(500).json({
             message: 'ALGO SALIO MAL',
@@ -67,15 +71,38 @@ export const createClientes = async (req, res) => {
 };
 
 
-
 export const updateClientes = async (req, res) => {
     try {
         const clientId = req.params.cod_cliente;
         const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol } = req.body;
 
+        // Check if the new DNI already exists
+        const [existingDniRows] = await pool.query('SELECT * FROM tb_cliente WHERE dni = ? AND cod_cliente != ?', [dni, clientId]);
+        if (existingDniRows.length > 0) {
+            return res.status(400).json({ message: 'El DNI ya existe en la base de datos' });
+        }
+
+        // Check if the new email already exists
+        const [existingEmailRows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ? AND cod_cliente != ?', [email, clientId]);
+        if (existingEmailRows.length > 0) {
+            return res.status(400).json({ message: 'El correo electrónico ya existe en la base de datos' });
+        }
+
+        // Check if the new telefono already exists
+        const [existingTelefonoRows] = await pool.query('SELECT * FROM tb_cliente WHERE telefono = ? AND cod_cliente != ?', [telefono, clientId]);
+        if (existingTelefonoRows.length > 0) {
+            return res.status(400).json({ message: 'El número de teléfono ya existe en la base de datos' });
+        }
+
+        // Hash the password if it is provided
+        let hashedPassword;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10); // 10 is the number of salt rounds
+        }
+
         const [result] = await pool.query(
             'UPDATE tb_cliente SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), dni = IFNULL(?, dni), telefono = IFNULL(?, telefono), email = IFNULL(?, email), id_Ubi = IFNULL(?, id_Ubi), id_Habi = IFNULL(?, id_Habi), password = IFNULL(?, password), idrol = IFNULL(?, idrol) WHERE cod_cliente = ?',
-            [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol, clientId]
+            [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword, idrol, clientId]
         );
 
         if (result.affectedRows === 0) {
@@ -86,13 +113,12 @@ export const updateClientes = async (req, res) => {
 
         res.json(rows[0]);
     } catch (error) {
+        console.error("Error en la función de actualización de clientes:", error);
         return res.status(500).json({
             message: 'ALGO SALIO MAL'
         });
     }
 };
-
-
 
 export const deleteClientes = async (req, res) => {
     try {
@@ -111,27 +137,3 @@ export const deleteClientes = async (req, res) => {
         });
     }
 };
-export const loginClientes = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ message: 'Por favor, proporcione un correo electrónico y una contraseña' });
-        }
-
-        const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE email = ? AND password = ?', [email, password]);
-
-        if (rows.length === 0) {
-            return res.status(401).json({ message: 'Usuario no encontrado' });
-        }
-
-        
-        return res.status(200).json({ message: 'Inicio de sesión exitoso' }); 
-    } catch (error) {
-        console.error("Error en la función de inicio de sesión:", error);
-        return res.status(500).json({
-            message: 'ALGO SALIO MAL',
-        });
-    }
-};
- 
