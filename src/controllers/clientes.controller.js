@@ -75,7 +75,12 @@ export const createClientes = async (req, res) => {
 export const updateClientes = async (req, res) => {
     try {
         const clientId = req.params.cod_cliente;
-        const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol } = req.body;
+        const { cod_cliente, nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol } = req.body;
+
+        // Verifica si se proporcionó el valor de cod_cliente
+        if (!cod_cliente) {
+            return res.status(400).json({ message: 'Se requiere el valor de cod_cliente para la actualización' });
+        }
 
         // Check if the new DNI already exists
         const [existingDniRows] = await pool.query('SELECT * FROM tb_cliente WHERE dni = ? AND cod_cliente != ?', [dni, clientId]);
@@ -103,23 +108,24 @@ export const updateClientes = async (req, res) => {
 
         const [result] = await pool.query(
             'UPDATE tb_cliente SET nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), dni = IFNULL(?, dni), telefono = IFNULL(?, telefono), email = IFNULL(?, email), id_Ubi = IFNULL(?, id_Ubi), id_Habi = IFNULL(?, id_Habi), password = IFNULL(?, password), idrol = IFNULL(?, idrol) WHERE cod_cliente = ?',
-            [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword, idrol, clientId]
+            [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword, idrol, cod_cliente]
         );
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
 
-        const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE cod_cliente = ?', [clientId]);
+        const [rows] = await pool.query('SELECT * FROM tb_cliente WHERE cod_cliente = ?', [cod_cliente]);
 
         res.json(rows[0]);
     } catch (error) {
         console.error("Error en la función de actualización de clientes:", error);
         return res.status(500).json({
-            message: 'ALGO SALIO MAL'
+            message: 'ALGO SALIÓ MAL'
         });
     }
 };
+
 
 export const deleteClientes = async (req, res) => {
     try {
