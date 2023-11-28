@@ -4,13 +4,14 @@ import clientesRoutes from './routes/clientes.routes.js'
 import sedesRoutes from './routes/sedes.routes.js'
 import rolRoutes from './routes/rol.routes.js'
 import habitacionRoutes from './routes/habitacion.routes.js';
-
+import reservasRoutes from './routes/reservas.routes.js'; 
 
 const app = express();
 
 
 app.use(express.json())
 
+app.use('/api', reservasRoutes); 
 app.use('/api', habitacionRoutes);
 app.use('/api', rolRoutes)
 app.use('/api', sedesRoutes)
