@@ -60,6 +60,8 @@ export const createClientes = async (req, res) => {
             email,
             id_Ubi,
             id_Habi,
+            password: hashedPassword, // Avoid sending the original password in the response
+
         });
         
     } catch (error) {
