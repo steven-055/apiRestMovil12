@@ -15,16 +15,25 @@ export const getSedes = async (req, res) => {
 
 // Crear una nueva sede
 export const createSede = async (req, res) => {
-    const { distrito } = req.body;
+    const { distrito, numero, tipo } = req.body;
 
     try {
-        const result = await pool.query('INSERT INTO tb_sedes (distrito) VALUES (?)', [distrito]);
-        res.json({ id: result.insertId, message: 'Sede registrada exitosamente.' });
+        // Insertar en tb_sedes
+        const resultSede = await pool.query('INSERT INTO tb_sedes (distrito) VALUES (?)', [distrito]);
+
+        // Obtener el ID de la sede recién insertada
+        const sedeId = resultSede.insertId;
+
+        // Insertar en tb_habitacion_sede
+        await pool.query('INSERT INTO tb_habitacion_sede (id_Ubi, numero, tipo) VALUES (?, ?, ?)', [sedeId, numero, tipo]);
+
+        res.json({ id: sedeId, message: 'Sede registrada exitosamente.' });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error al registrar la sede.' });
     }
 };
+
 
 // Actualizar una sede
 export const updateSede = async (req, res) => {
