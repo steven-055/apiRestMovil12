@@ -3,15 +3,14 @@ import bcrypt from 'bcrypt';
 
 export const getClientes = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT cod_cliente, nombre, apellido, dni, telefono, email, id_Ubi, id_Habi FROM tb_cliente');
+        const [rows] = await pool.query('SELECT * FROM tb_cliente');
         res.json(rows);
     } catch (error) {
         return res.status(500).json({
-            message: 'ALGO SALIÓ MAL'
+            message: 'ALGO SALIO MAL'
         });
     }
 };
-
 
 export const createClientes = async (req, res) => {
     try {
