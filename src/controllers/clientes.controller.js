@@ -14,7 +14,7 @@ export const getClientes = async (req, res) => {
 
 export const createClientes = async (req, res) => {
     try {
-        const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password } = req.body;
+        const { nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol } = req.body;
 
         if (!nombre || !apellido || !dni || !telefono || !email || !id_Ubi || !password) {
             return res.status(400).json({ message: 'Error al crear' });
@@ -42,11 +42,11 @@ export const createClientes = async (req, res) => {
         let values;
 
         if (id_Habi) {
-            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword];
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, password, idrol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, id_Habi, hashedPassword, idrol || null];
         } else {
-            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            values = [nombre, apellido, dni, telefono, email, id_Ubi, hashedPassword];
+            query = 'INSERT INTO tb_cliente(nombre, apellido, dni, telefono, email, id_Ubi, password, idrol) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            values = [nombre, apellido, dni, telefono, email, id_Ubi, hashedPassword, idrol || null];
         }
 
         const [rows] = await pool.query(query, values);
@@ -60,8 +60,8 @@ export const createClientes = async (req, res) => {
             email,
             id_Ubi,
             id_Habi,
-            password: hashedPassword, // Avoid sending the original password in the response
-
+            idrol: idrol || null, // Enviar null si no se proporciona idrol
+            password: hashedPassword,
         });
         
     } catch (error) {
