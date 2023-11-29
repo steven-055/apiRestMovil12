@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/habitacion/lista/:id_Ubi', getHabitaciones);
 
-router.get('/habitacion/lista', getAllHabitaciones);
+router.get('/habitacion/listas', getAllHabitaciones);
 
 router.post('/habitacion/crea', createHabitacion);
 
